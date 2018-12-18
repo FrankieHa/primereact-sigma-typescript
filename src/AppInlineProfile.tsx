@@ -1,25 +1,25 @@
-import React, { Component } from 'react';
-import classNames from 'classnames';
+import React from 'react'
+import classNames from 'classnames'
 
 interface AppProps {
 }
 
 interface AppState {
-    expanded: boolean;
+    expanded: boolean
 }
 
 export class AppInlineProfile extends React.Component<AppProps, AppState> {
     constructor(props: AppProps) {
-        super(props);
+        super(props)
         this.state = {
             expanded: false
-        };
-        this.onClick = this.onClick.bind(this);
+        }
+        this.onClick = this.onClick.bind(this)
     }
 
     onClick(event: React.MouseEvent) {
-        this.setState({ expanded: !this.state.expanded });
-        event.preventDefault();
+        this.setState({ expanded: !this.state.expanded })
+        event.preventDefault()
     }
 
     render() {
@@ -38,6 +38,6 @@ export class AppInlineProfile extends React.Component<AppProps, AppState> {
                     <li><a><i className="pi pi-fw pi-power-off" /><span>Logout</span></a></li>
                 </ul>
             </div>
-        );
+        )
     }
 }

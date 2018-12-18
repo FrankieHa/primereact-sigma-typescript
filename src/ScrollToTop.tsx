@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import React from 'react'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
 
 interface AppState {
 }
 
 class ScrollToTop extends React.Component<RouteComponentProps, AppState> {
     constructor(props: RouteComponentProps) {
-        super(props);
+        super(props)
     }
 
     componentDidUpdate(prevProps: RouteComponentProps) {
@@ -20,4 +20,4 @@ class ScrollToTop extends React.Component<RouteComponentProps, AppState> {
     }
 }
 
-export default withRouter(ScrollToTop);
+export default withRouter(ScrollToTop)

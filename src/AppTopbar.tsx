@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { InputText } from 'primereact/inputtext';
+import React from 'react'
+import { InputText } from 'primereact/inputtext'
 
 interface AppProps {
-    onToggleMenu: React.MouseEventHandler;
+    onToggleMenu: React.MouseEventHandler
 }
 
 interface AppState {
@@ -35,6 +35,6 @@ export class AppTopbar extends React.Component<AppProps, AppState> {
                     </a>
                 </div>
             </div>
-        );
+        )
     }
 }
