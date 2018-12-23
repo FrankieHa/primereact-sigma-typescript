@@ -3,7 +3,7 @@ import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
 import { CarService, Car } from '../service/CarService'
 import { TreeTable } from 'primereact/treetable'
-import { NodeService } from '../service/NodeService'
+import { NodeService, Node, NodeKey } from '../service/NodeService'
 
 interface AppProps {
 }
@@ -11,8 +11,8 @@ interface AppProps {
 interface AppState {
     dataTableValue: Array<Car>
     dataTableSelection: Car
-    nodes: Array<any>
-    selectedNodes: Array<any>
+    nodes: Array<Node>
+    selectedNodes: Array<NodeKey>
 }
 
 export class DataDemo extends React.Component<AppProps, AppState> {

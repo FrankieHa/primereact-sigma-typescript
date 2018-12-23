@@ -1,7 +1,18 @@
 import axios from 'axios'
+import { type } from 'os';
+import TreeNode from 'primereact/components/treenode/TreeNode';
 
-export interface FileSystem {
-    
+export interface Node extends TreeNode {
+    key?: NodeKey
+    data?: NodeData
+}
+
+export type NodeKey = string
+
+interface NodeData {
+    name?: string
+    size?: string
+    type?: string
 }
 
 export class NodeService {
@@ -30,7 +41,7 @@ export class NodeService {
             .then(res => res.data.root)
     }
 
-    getTreeTableNodes() {
+    getTreeTableNodes(): Promise<Array<Node>> {
         return axios.get('assets/demo/data/treetablenodes.json')
                 .then(res => res.data.root);
     }
