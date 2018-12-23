@@ -2,6 +2,8 @@ import React from 'react'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
 import { CarService, Car } from '../service/CarService'
+import { TreeTable } from 'primereact/treetable'
+import { NodeService } from '../service/NodeService'
 
 interface AppProps {
 }
@@ -9,23 +11,30 @@ interface AppProps {
 interface AppState {
     dataTableValue: Array<Car>
     dataTableSelection: Car
+    nodes: Array<any>
+    selectedNodes: Array<any>
 }
 
 export class DataDemo extends React.Component<AppProps, AppState> {
-    private carService: CarService;
+    private carService: CarService
+    private nodeService: NodeService
 
     constructor(props: AppProps) {
         super(props)
         this.state = {
             dataTableValue: [],
-            dataTableSelection: {}
+            dataTableSelection: {},
+            nodes: [],
+            selectedNodes: []
         }
 
-        this.carService = new CarService();
+        this.carService = new CarService()
+        this.nodeService = new NodeService()
     }
 
     componentDidMount() {
         this.carService.getCarsMedium().then(data => this.setState({ dataTableValue: data }))
+        this.nodeService.getTreeTableNodes().then(data => this.setState({ nodes: data }))
     }
 
     render() {
@@ -42,6 +51,17 @@ export class DataDemo extends React.Component<AppProps, AppState> {
                             <Column field="brand" header="Brand" sortable={true} />
                             <Column field="color" header="Color" sortable={true} />
                         </DataTable>
+                    </div>
+                </div>
+
+                <div className="p-col-12">
+                    <div className="card card-w-title">
+                        <h1>TreeTable</h1>
+                        <TreeTable value={this.state.nodes} selectionMode="multiple" selectionKeys={this.state.selectedNodes} onSelectionChange={e => this.setState({selectedNodes: e.value})} metaKeySelection={false}>
+                            <Column field="name" header="Name" expander></Column>
+                            <Column field="size" header="Size"></Column>
+                            <Column field="type" header="Type"></Column>
+                        </TreeTable>
                     </div>
                 </div>
 

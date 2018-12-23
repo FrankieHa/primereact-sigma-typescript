@@ -72,6 +72,7 @@ class App extends React.Component<AppProps, AppState> {
                 //                label: 'Components', icon: 'pi pi-fw pi-globe', badge: '9',
                 items: [
                     { label: 'Data', icon: 'pi pi-fw pi-align-justify', command: () => { window.location.href = "#/data" } },
+                    { label: '123456789012345678901234567890', icon: 'pi pi-fw pi-align-justify', command: () => { window.location.href = "#/123" } }
                 ]
             }
         ]
