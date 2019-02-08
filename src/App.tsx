@@ -7,6 +7,7 @@ import { AppMenu } from './AppMenu'
 import { MenuItem } from 'primereact/components/menuitem/MenuItem'
 import { Route } from 'react-router-dom'
 import {DataDemo} from './components/DataDemo'
+import {DataHooksDemo} from './components/DataHooksDemo'
 
 import 'primereact/resources/themes/nova-light/theme.css'
 import 'primereact/resources/primereact.min.css'
@@ -72,7 +73,7 @@ class App extends React.Component<AppProps, AppState> {
                 //                label: 'Components', icon: 'pi pi-fw pi-globe', badge: '9',
                 items: [
                     { label: 'Data', icon: 'pi pi-fw pi-align-justify', command: () => { window.location.href = "#/data" } },
-                    { label: '123456789012345678901234567890', icon: 'pi pi-fw pi-align-justify', command: () => { window.location.href = "#/123" } }
+                    { label: 'Data - Hooks', icon: 'pi pi-fw pi-align-justify', command: () => { window.location.href = "#/datahooks" } }
                 ]
             }
         ]
@@ -170,6 +171,7 @@ class App extends React.Component<AppProps, AppState> {
 
                 <div className="layout-main">
                     <Route path="/data" component={DataDemo} />
+                    <Route path="/datahooks" component={DataHooksDemo} />
                 </div>
 
             </div>
