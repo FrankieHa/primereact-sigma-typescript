@@ -1,27 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import classNames from 'classnames'
 import { MenuItem } from 'primereact/components/menuitem/MenuItem'
 
 interface AppSubmenuProps {
     className?: string
     items: Array<MenuItem>
-    onMenuItemClick(e: {originalEvent: Event, item: MenuItem}): void
+    onMenuItemClick(e: { originalEvent: Event, item: MenuItem }): void
     root?: boolean
 }
+const AppSubmenu = (props: AppSubmenuProps) => {
+    const [activeIndex, setActiveIndex] = useState<React.Key | null>(null);
 
-interface AppSubmenuState {
-    activeIndex: React.Key | null
-}
-
-class AppSubmenu extends React.Component<AppSubmenuProps, AppSubmenuState> {
-    constructor(props: AppSubmenuProps) {
-        super(props)
-        this.state = {
-            activeIndex: null
-        }
-    }
-
-    onMenuItemClick(event: any, item: MenuItem, index: React.Key) {
+    function onMenuItemClick(event: any, item: MenuItem, index: React.Key) {
         //avoid processing disabled items
         if (item.disabled) {
             event.preventDefault()
@@ -38,55 +28,49 @@ class AppSubmenu extends React.Component<AppSubmenuProps, AppSubmenuState> {
             event.preventDefault()
         }
 
-        if (index === this.state.activeIndex)
-            this.setState({ activeIndex: null })
+        if (index === activeIndex)
+            setActiveIndex(null)
         else
-            this.setState({ activeIndex: index })
+            setActiveIndex(index)
 
-        if (this.props.onMenuItemClick) {
-            this.props.onMenuItemClick({
+        if (props.onMenuItemClick) {
+            props.onMenuItemClick({
                 originalEvent: event,
                 item: item
             })
         }
     }
 
-    render() {
-        let items = this.props.items && this.props.items.map((item, i) => {
-            let active = this.state.activeIndex === i
-            let styleClass = classNames({ 'active-menuitem': active })
-            //            let styleClass = classNames(item.badgeStyleClass, {'active-menuitem': active})
-            //            let badge = item.badge && <span className="menuitem-badge">{item.badge}</span>
-            let submenuIcon = item.items && <i className="pi pi-fw pi-angle-down menuitem-toggle-icon"></i>
+    let items = props.items && props.items.map((item, i) => {
+        let active = activeIndex === i
+        let styleClass = classNames({ 'active-menuitem': active })
+        //            let styleClass = classNames(item.badgeStyleClass, {'active-menuitem': active})
+        //            let badge = item.badge && <span className="menuitem-badge">{item.badge}</span>
+        let submenuIcon = item.items && <i className="pi pi-fw pi-angle-down menuitem-toggle-icon"></i>
 
-            return (
-                <li className={styleClass} key={i}>
-                    {item.items && this.props.root === true && <div className='arrow'></div>}
-                    <a href={item.url} onClick={(e) => this.onMenuItemClick(e, item, i)} target={item.target}>
-                        <i className={item.icon}></i>
-                        <span>{item.label}</span>
-                        {submenuIcon}
-                    </a>
-                    <AppSubmenu items={item.items as Array<MenuItem>} onMenuItemClick={this.props.onMenuItemClick} />
-                </li>
-            )
-        })
+        return (
+            <li className={styleClass} key={i}>
+                {item.items && props.root === true && <div className='arrow'></div>}
+                <a href={item.url} onClick={(e) => onMenuItemClick(e, item, i)} target={item.target}>
+                    <i className={item.icon}></i>
+                    <span>{item.label}</span>
+                    {submenuIcon}
+                </a>
+                <AppSubmenu items={item.items as Array<MenuItem>} onMenuItemClick={props.onMenuItemClick} />
+            </li>
+        )
+    })
 
-        return items ? <ul className={this.props.className}>{items}</ul> : null
-    }
+    return items ? <ul className={props.className}>{items}</ul> : null
 }
 
 interface AppMenuProps {
     model: Array<MenuItem>
-    onMenuItemClick(e: {originalEvent: Event, item: MenuItem}): void
+    onMenuItemClick(e: { originalEvent: Event, item: MenuItem }): void
 }
-
-interface AppMenuState {
+export const AppMenu = (props: AppMenuProps) => {
+    return (
+        <div className="menu"><AppSubmenu items={props.model} className="layout-main-menu"
+            onMenuItemClick={props.onMenuItemClick} root={true} />
+        </div>)
 }
-
-export class AppMenu extends React.Component<AppMenuProps, AppMenuState> {
-    render() {
-        return <div className="menu"><AppSubmenu items={this.props.model} className="layout-main-menu" onMenuItemClick={this.props.onMenuItemClick} root={true} /></div>
-    }
-}
-``

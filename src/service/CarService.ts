@@ -10,8 +10,8 @@ export interface Car {
 export class CarService {
     
     getCarsSmall(): Promise<Array<Car>> {
-        return axios.get('assets/demo/data/cars-small.json')
-                .then(res => res.data.data)
+        return fetch('assets/demo/data/cars-small.json')
+                .then(res => res.json()).then(data=>data.data)
     }
 
     getCarsMedium(): Promise<Array<Car>> {

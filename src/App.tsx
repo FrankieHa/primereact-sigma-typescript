@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState,  } from 'react'
 import classNames from 'classnames'
 import { AppTopbar } from './AppTopbar'
 import { ScrollPanel } from 'primereact/components/scrollpanel/ScrollPanel'
@@ -6,19 +6,16 @@ import { AppInlineProfile } from './AppInlineProfile'
 import { AppMenu } from './AppMenu'
 import { MenuItem } from 'primereact/components/menuitem/MenuItem'
 import { Route } from 'react-router-dom'
-import {DataDemo} from './components/DataDemo'
-import {DataHooksDemo} from './components/DataHooksDemo'
+import { DataDemo } from './components/DataDemo'
+import { DataHooksDemo } from './components/DataHooksDemo'
 
 import 'primereact/resources/themes/nova-light/theme.css'
 import 'primereact/resources/primereact.min.css'
 import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
-import 'fullcalendar/dist/fullcalendar.css'
+import 'fullcalendar/main.css'
 import './layout/layout.css'
 import './App.css'
-
-interface AppProps {
-}
 
 interface AppState {
     layoutMode: string
@@ -28,155 +25,129 @@ interface AppState {
     mobileMenuActive: boolean
 }
 
-class App extends React.Component<AppProps, AppState> {
+const App = () => {
+    const [layoutMode, setLayoutMode] = useState('static');
+    const [layoutColorMode, setLayoutColorMode] = useState('dark');
+    const [staticMenuInactive, setStaticMenuInactive] = useState(false);
+    const [overlayMenuActive, setOverlayMenuActive] = useState(false);
+    const [mobileMenuActive, setMobileMenuActive] = useState(false);
 
-    private menuClick: boolean = false
-    private layoutMenuScroller!: ScrollPanel | null
-    private menu!: Array<MenuItem>
+    let menuClick: boolean = false
+    let layoutMenuScroller!: ScrollPanel | null
+    let menu!: Array<MenuItem>
 
-    constructor(props: AppProps) {
-        super(props)
-        this.state = {
-            layoutMode: 'static',
-            layoutColorMode: 'dark',
-            staticMenuInactive: false,
-            overlayMenuActive: false,
-            mobileMenuActive: false
+    menu = [
+        {
+            label: 'Menu Modes', icon: 'pi pi-fw pi-cog',
+            items: [
+                { label: 'Static Menu', icon: 'pi pi-fw pi-bars', command: () => setLayoutMode('static') },
+                { label: 'Overlay Menu', icon: 'pi pi-fw pi-bars', command: () => setLayoutMode('overlay') }
+            ]
+        },
+        {
+            label: 'Menu Colors', icon: 'pi pi-fw pi-align-left',
+            items: [
+                { label: 'Dark', icon: 'pi pi-fw pi-bars', command: () => setLayoutColorMode('dark') },
+                { label: 'Light', icon: 'pi pi-fw pi-bars', command: () => setLayoutColorMode('light') }
+            ]
+        },
+        {
+            label: 'Components', icon: 'pi pi-fw pi-globe',
+            //                label: 'Components', icon: 'pi pi-fw pi-globe', badge: '9',
+            items: [
+                { label: 'Data', icon: 'pi pi-fw pi-align-justify', command: () => { window.location.href = "#/data" } },
+                { label: 'Data - Hooks', icon: 'pi pi-fw pi-align-justify', command: () => { window.location.href = "#/datahooks" } }
+            ]
+        }
+    ]
+
+    function onWrapperClick(event: React.MouseEvent) {
+        if (!menuClick) {
+
+            setOverlayMenuActive(false)
+            setMobileMenuActive(false)
+
         }
 
-        this.onWrapperClick = this.onWrapperClick.bind(this)
-        this.onToggleMenu = this.onToggleMenu.bind(this)
-        this.onSidebarClick = this.onSidebarClick.bind(this)
-        this.onMenuItemClick = this.onMenuItemClick.bind(this)
-
-        this.createMenu()
+        menuClick = false
     }
 
-    createMenu() {
-        this.menu = [
-            {
-                label: 'Menu Modes', icon: 'pi pi-fw pi-cog',
-                items: [
-                    { label: 'Static Menu', icon: 'pi pi-fw pi-bars', command: () => this.setState({ layoutMode: 'static' }) },
-                    { label: 'Overlay Menu', icon: 'pi pi-fw pi-bars', command: () => this.setState({ layoutMode: 'overlay' }) }
-                ]
-            },
-            {
-                label: 'Menu Colors', icon: 'pi pi-fw pi-align-left',
-                items: [
-                    { label: 'Dark', icon: 'pi pi-fw pi-bars', command: () => this.setState({ layoutColorMode: 'dark' }) },
-                    { label: 'Light', icon: 'pi pi-fw pi-bars', command: () => this.setState({ layoutColorMode: 'light' }) }
-                ]
-            },
-            {
-                label: 'Components', icon: 'pi pi-fw pi-globe',
-                //                label: 'Components', icon: 'pi pi-fw pi-globe', badge: '9',
-                items: [
-                    { label: 'Data', icon: 'pi pi-fw pi-align-justify', command: () => { window.location.href = "#/data" } },
-                    { label: 'Data - Hooks', icon: 'pi pi-fw pi-align-justify', command: () => { window.location.href = "#/datahooks" } }
-                ]
+    function onToggleMenu(event: React.MouseEvent) {
+        menuClick = true
+
+        if (isDesktop()) {
+            if (layoutMode === 'overlay') {
+                setOverlayMenuActive(!overlayMenuActive)
             }
-        ]
-    }
-
-    onWrapperClick(event: React.MouseEvent) {
-        if (!this.menuClick) {
-            this.setState({
-                overlayMenuActive: false,
-                mobileMenuActive: false
-            })
-        }
-
-        this.menuClick = false
-    }
-
-    onToggleMenu(event: React.MouseEvent) {
-        this.menuClick = true
-
-        if (this.isDesktop()) {
-            if (this.state.layoutMode === 'overlay') {
-                this.setState({
-                    overlayMenuActive: !this.state.overlayMenuActive
-                })
-            }
-            else if (this.state.layoutMode === 'static') {
-                this.setState({
-                    staticMenuInactive: !this.state.staticMenuInactive
-                })
+            else if (layoutMode === 'static') {
+                setStaticMenuInactive(!staticMenuInactive)
             }
         }
         else {
-            const mobileMenuActive = this.state.mobileMenuActive
-            this.setState({
-                mobileMenuActive: !mobileMenuActive
-            })
+            setMobileMenuActive(!mobileMenuActive)
         }
 
         event.preventDefault()
     }
 
-    isDesktop(): boolean {
+    function isDesktop(): boolean {
         return window.innerWidth > 1024
     }
 
-    onSidebarClick(event: React.MouseEvent) {
-        this.menuClick = true
+    function onSidebarClick(event: React.MouseEvent) {
+        menuClick = true
         setTimeout(() => {
-            if (this.layoutMenuScroller) {
+            if (layoutMenuScroller) {
                 // Workaround because file ScrollPanel.d.ts is missing moveBar() function definition
-                (this.layoutMenuScroller as any)["moveBar"]()
+                (layoutMenuScroller as any)["moveBar"]()
                 //                this.layoutMenuScroller.moveBar()
             }
         }, 500)
     }
 
-    onMenuItemClick(event: { originalEvent: Event, item: MenuItem }) {
+    function onMenuItemClick(event: { originalEvent: Event, item: MenuItem }) {
         if (!event.item.items) {
-            this.setState({
-                overlayMenuActive: false,
-                mobileMenuActive: false
-            })
+            setOverlayMenuActive(false)
+            setMobileMenuActive(false)
         }
     }
 
-    render() {
-        let logo = this.state.layoutColorMode === 'dark' ? 'assets/layout/images/logo-white.svg' : 'assets/layout/images/logo.svg'
+    let logo = layoutColorMode === 'dark' ? 'assets/layout/images/logo-white.svg' : 'assets/layout/images/logo.svg'
 
-        let wrapperClass = classNames('layout-wrapper', {
-            'layout-overlay': this.state.layoutMode === 'overlay',
-            'layout-static': this.state.layoutMode === 'static',
-            'layout-static-sidebar-inactive': this.state.staticMenuInactive && this.state.layoutMode === 'static',
-            'layout-overlay-sidebar-active': this.state.overlayMenuActive && this.state.layoutMode === 'overlay',
-            'layout-mobile-sidebar-active': this.state.mobileMenuActive
-        })
+    let wrapperClass = classNames('layout-wrapper', {
+        'layout-overlay': layoutMode === 'overlay',
+        'layout-static': layoutMode === 'static',
+        'layout-static-sidebar-inactive': staticMenuInactive && layoutMode === 'static',
+        'layout-overlay-sidebar-active': overlayMenuActive && layoutMode === 'overlay',
+        'layout-mobile-sidebar-active': mobileMenuActive
+    })
 
-        let sidebarClassName = classNames("layout-sidebar", { 'layout-sidebar-dark': this.state.layoutColorMode === 'dark' })
+    let sidebarClassName = classNames("layout-sidebar", { 'layout-sidebar-dark': layoutColorMode === 'dark' })
 
-        return (
-            <div className={wrapperClass} onClick={this.onWrapperClick}>
-                <AppTopbar onToggleMenu={this.onToggleMenu} />
+    return (
+        <div className={wrapperClass} onClick={onWrapperClick}>
+            <AppTopbar onToggleMenu={onToggleMenu} />
 
-                <div className={sidebarClassName} onClick={this.onSidebarClick}>
+            <div className={sidebarClassName} onClick={onSidebarClick}>
 
-                    <ScrollPanel ref={(el) => this.layoutMenuScroller = el} style={{ height: '100%' }}>
-                        <div className="layout-sidebar-scroll-content" >
-                            <div className="layout-logo">
-                                <img alt="Logo" src={logo} />
-                            </div>
-                            <AppInlineProfile />
-                            <AppMenu model={this.menu} onMenuItemClick={this.onMenuItemClick} />
+                <ScrollPanel ref={(el) => layoutMenuScroller = el} style={{ height: '100%' }}>
+                    <div className="layout-sidebar-scroll-content" >
+                        <div className="layout-logo">
+                            <img alt="Logo" src={logo} />
                         </div>
-                    </ScrollPanel>
-                </div>
-
-                <div className="layout-main">
-                    <Route path="/data" component={DataDemo} />
-                    <Route path="/datahooks" component={DataHooksDemo} />
-                </div>
-
+                        <AppInlineProfile />
+                        <AppMenu model={menu} onMenuItemClick={onMenuItemClick} />
+                    </div>
+                </ScrollPanel>
             </div>
-        )
-    }
+
+            <div className="layout-main">
+                <Route path="/data" component={DataDemo} />
+                <Route path="/datahooks" component={DataHooksDemo} />
+            </div>
+
+        </div>
+    )
 }
 
 export default App
