@@ -16,10 +16,11 @@ export const DataHooksDemo: FunctionComponent = () => {
 
     useEffect(() => {
         carService.getCarsMedium().then(data => setDataTableValue(data))
-    }, [])
+console.log('datatable:' + dataTableValue)
+    }, []) //eslint-disable-line
     useEffect(() => {
         nodeService.getTreeTableNodes().then(data => setNodes(data))
-    }, [])
+    }, []) //eslint-disable-line
 
     return (
         <div className="p-grid">
